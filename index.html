@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- <div id="like_button_container"></div> -->
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+      class Form extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = { value: 'coconut' };
+          this.handleChange = this.handleChange.bind(this);
+        }
+        handleChange(event) {
+          this.setState({ value: event.target.value });
+        }
+        render() {
+          return (
+            <form onSubmit={this.handleSubmit}>
+              <label>
+                选择你喜欢的风味:
+                <select value={this.state.value} onChange={this.handleChange}>
+                  <option value="grapefruit">葡萄柚</option>
+                  <option value="lime">酸橙</option>
+                  <option value="coconut">椰子</option>
+                  <option value="mango">芒果</option>
+                </select>
+              </label>
+              <input type="submit" value="提交" />
+            </form>
+          );
+        }
+      }
+      function Welcome(props) {
+        const numbers = [1, 2, 3, 4, 5];
+        const listItems = numbers.map((item) => (
+          <li key={item.toString()}>{item}</li>
+        ));
+        return <ul>{listItems}</ul>;
+      }
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+
+      // 组件运用时传入属性参数都会被当做组件的 props 使用
+      const element = <Form />;
+      root.render(element);
+
+    </script>
+
+    <!-- <script src="like_button.js"></script> -->
+    <script
+      src="https://unpkg.com/react@18/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  </body>
+</html>
