@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="containner"></div>
+<script type="text/babel">
+
+// 判断水沸腾的组件
+function BoilingVerdict(props) {
+  if (props.celsius >= 100) {
+    return <p>The water would boil.</p>;
+  }
+  return <p>The water would not boil.</p>;
+}
+
+// 计算组件，渲染输入温度 input，并保存到组件的 this.state.temperature 中
+/**
+class Calculator extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.state = {temperature: ''};
+  }
+
+  handleChange(e) {
+    this.setState({temperature: e.target.value});
+  }
+
+  render() {
+    const temperature = this.props.temperature;
+    
+    return (
+      <fieldset>
+        <legend>
+          Enter temperature in Celsius:
+        </legend>
+        <input value={temperature} 
+          onChange={this.handleChange}
+        />
+        <BoilingVerdict celsius={parseInt(temperature)} />
+      </fieldset>
+    ); 
+  }
+}
+*/
+const scaleNames = {
+  c: 'Celsius',
+  f: 'Fahrenheit'
+};
+
+class TemperatureInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    // 每一个 Input 组件都独立地保存着自己的数据
+    this.state = {temperature: ''};
+  }
+
+  handleChange(e) {
+    // 因为数据来源变成通过 props 获取，所以，当变更时，也需要通过调用父组件的方法来更新 
+    // this.setState({temperature: e.target.value});
+    // 当输入框数据发生变化时执行，
+    // 调用父组件传入的温度更改方法
+    this.props.onTemperatureChange(e.target.value);
+  }
+
+  render() {
+    // 当前 Input 组件用 this.state 取到数据，就只是组件本身的数据，改用 this.props.temperature
+    // 从父组件处拿到数据
+    // const temperature = this.state.temperature;
+    // 这里的输入框绑定的数据也是从父组件中拿到
+    const temperature = this.props.temperature;
+    // 因为 props 是只读的，来自父组件的数据，不能修改，而使用 自身的 state 可以调用 setState 正常修改
+    // 当数据变成父组件通过 Props 传递的, 这样 Input 组件不能修改数据
+    const scale = this.props.scale;
+    return (
+      <fieldset>
+        <legend>Enter temperature in {scaleNames[scale]}:</legend>
+        <input value={temperature}
+               onChange={this.handleChange} />
+      </fieldset>
+    );
+  }
+}
+
+class Calculator extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
+    this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this);
+    // 把两个数据状态保存到父组件 state 中
+    this.state = {temperature: '', scale: 'c'};
+  }
+  // 数据变更时，更改父组件的 state 数据
+  handleCelsiusChange(temperature) {
+    this.setState({scale: 'c', temperature});
+  }
+  // 父组件: 定义更改数据的方法，传给子组件，当子组件输入框变化
+  // handleChange --> this.props.onTemperatureChange --> handleCelsiusChange --> ths.set()
+
+  handleFahrenheitChange(temperature) {
+    this.setState({scale: 'f', temperature});
+  }
+  render() {
+    // 获取数据
+    const scale = this.state.scale;
+    const temperature = this.state.temperature;
+    const celsius = scale === 'f' ? tryConvert(temperature, toCelsius) : temperature;
+    const fahrenheit = scale === 'c' ? tryConvert(temperature, toFahrenheit) : temperature;
+    return (
+      <div>
+        <TemperatureInput
+          scale="c"
+          temperature={celsius}
+          onTemperatureChange={this.handleCelsiusChange} />
+        <TemperatureInput
+          scale="f"
+          temperature={fahrenheit}
+          onTemperatureChange={this.handleFahrenheitChange} />
+        <BoilingVerdict
+          celsius={parseFloat(celsius)} />
+      </div>
+    );
+  }
+}
+
+// 温度转换函数
+function toCelsius(fahrenheit) {
+  return (fahrenheit - 32) * 5 / 9;
+}
+
+function toFahrenheit(celsius) {
+  return (celsius * 9 / 5) + 32;
+}
+
+// 根据一个输入框的值计算另一个输入框的值
+function tryConvert(temperature, convert) {
+  const input = parseFloat(temperature);
+  if (Number.isNaN(input)) {
+    return '';
+  }
+  const output = convert(input);
+  const rounded = Math.round(output * 1000) / 1000;
+  return rounded.toString();
+}
+
+const root = ReactDOM.createRoot(document.getElementById('containner'))
+const element = <Calculator temperature={1} />
+root.render(element);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+  <script
+  src="https://unpkg.com/react@18/umd/react.development.js"
+  crossorigin
+></script>
+<script
+  src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+  crossorigin
+></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</body>
+</html>
