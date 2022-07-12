@@ -95,3 +95,6 @@ root.render(<Greeting isLoggedIn={false} />);
     const listItems = numbers.map(item => <li>{item}</li>)
     return <ul>{listItems}</ul>
 ```
+
+### 状态提升
+> 多个组件需要反应相同的变化数据，这时将共享状态提升到最近的共同父组件中去。
