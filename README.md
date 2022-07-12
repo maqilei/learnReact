@@ -98,3 +98,74 @@ root.render(<Greeting isLoggedIn={false} />);
 
 ### 状态提升
 > 多个组件需要反应相同的变化数据，这时将共享状态提升到最近的共同父组件中去。
+
+### Hook
+> Hook 是一些可以让你在函数组件里“钩入”React state 及生命周期等特性的函数。Hook 不能在 class 组件中使用
+#### Hook 使用规则
+- 只能在函数最外层调用Hook。不要再循环、条件判断或者子函数中调用，因为只有当Hook 的调用顺序在多次渲染之间保持一致，React 就能正确地将内部 state 与对应的 Hook 进行关联。
+- 只能在 React 的函数组建中调用 Hook。不要再其他JavaScript 函数中调用。
+#### state Hook
+> 为函数组件提供一种类似于 Class 组件的 state 和 this.setState 一样的功能
+```javascript
+import React, { useState, useEffect } from 'react';
+
+function Example() {
+  // 声明一个叫 “count” 的 state 变量。
+  // useState 返回两个值，当前状态和一个可以变更状态的函数类似 Class 组件里的
+  // 这里是一个简单的解构赋值的操作
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+// 等价的 Class 组件的写法
+class Example extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: 0
+    };
+  }
+  render() {
+    return (
+      <div>
+        <p>You clicked {this.state.count} times</p>
+        <button onClick={() => this.setState({ count: this.state.count + 1 })}>
+          Click me
+        </button>
+      </div>
+    );
+  }
+}
+```
+
+#### useEffect Hook
+> 通过 useEffect Hook，可以告诉 React 组件在渲染之后执行某些操作，React 会保存传入的函数，并且在执行 DOM 更新之后调用它
+```javascript
+import React, { useState, useEffect } from 'react';
+
+function Example() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    document.title = `You clicked ${count} times`;
+  });
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+useEffect 会在第一次渲染和每次更新之后执行。它允许我们按照代码的用途分离，
+> 
+
